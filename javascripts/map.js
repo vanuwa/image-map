@@ -157,9 +157,9 @@
         element = e.srcElement;
       }
 
-      puts(e.offsetX + " < - > " + (e.pageX - self.el.parentNode.offsetLeft));
-      var x = e.offsetX ? e.offsetX : e.pageX - self.el.parentNode.offsetLeft;
-      var y = e.offsetY ? e.offsetY : e.pageY - self.el.parentNode.offsetTop;
+      puts(e.offsetX + " < - > " + e.layerX);
+      var x = e.offsetX ? e.offsetX : e.layerX; //e.pageX - self.el.parentNode.offsetLeft;
+      var y = e.offsetY ? e.offsetY : e.layerY; //pageY - self.el.parentNode.offsetTop;
       //puts("CLIENT: " + e.clientX + " , " + e.clientY + " | " + element.offsetLeft + " , " + element.offsetTop + " | " + element.offsetLeft + " , " + element.offsetTop);
       //puts( e.offsetX + " , " + e.offsetY);
 

@@ -8,7 +8,7 @@
 
   // HELPERS
 
-  // show msg
+  // show msg just for debug info
   function puts(msg) {
     if (SETTINGS.env === 'dev') {
       if (typeof console !== 'undefined' && console !== null) {
@@ -71,7 +71,7 @@
       this.id = new Date().getTime();
       
       this.el = document.createElement('div');
-      this.el.setAttribute('class','point');
+      this.el.className = 'point';
       this.el.id = this.id;
 
       this.x ? (this.el.style.left = this.x + 'px') : true
@@ -308,11 +308,9 @@
 
       var form_width = parseInt(edit_point_form.parentNode.style.width);
       var position = point.el.offsetLeft + point.el.offsetWidth;
-      puts("position(" + position + ") + form_width(" + form_width + ") = " + (position + form_width) + " > " + map.el.offsetWidth);
       if ((position + form_width) > map.el.offsetWidth) {
         position = map.el.offsetWidth - form_width - 10;
       }
-      puts('poisition: ' + position);
       edit_point_form.parentNode.style.left = position + 'px';
       edit_point_form.parentNode.style.display = 'block';
     };

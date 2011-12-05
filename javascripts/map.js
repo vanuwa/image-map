@@ -37,7 +37,7 @@
     }
   };
   
-  // "clearing" events
+  // blocking events
   function block_event(e) {
     if (!e) e = window.event;
     
@@ -123,21 +123,23 @@
   var Map = (function() {
 
     var self;
-    var edit_point_form;
+    var edit_point_form, remove_point_form;
     var mouse_down = false;
     var captured_point = null;
-    var points = [];
 
     function Map(node) {
       self = this;
       node || (node = document.createElement('img'));
       this.el = node;
+      this.points = [];
 
       bind(node, 'click', map_on_click, false);
 
       node.parentNode.appendChild(build_edit_point_form());
       edit_point_form = document.getElementById('edit_point_form');
       hide_edit_point_form();
+
+      remove_point_form = document.getElementById('delete_point_form');
 
       bind(document.getElementById('hide_form_button'), 'click', function(e) {hide_edit_point_form()}, false);
       bind(document.getElementById('edit_point_form'), 'submit', update_point, false);
@@ -149,10 +151,11 @@
     
     // public methods
     
+    // add point to DOM tree
     Map.prototype.add_point = function(point) {
       if (typeof point !== 'undefined' && point) {
         this.el.parentNode.appendChild(point.el);
-        points[point.id] = point;
+        self.points[point.id] = point;
         return true;
       }
       return false;
@@ -161,18 +164,18 @@
     
     // private methods: helpers and listeners
     
+    // mouse down listener
     var point_on_mouse_down = function(e) {
       e || (e = window.event);
       mouse_down = true;
-      puts("point_on_mouse_down");
       captured_point = get_element(e);
       block_event(e);
       return false;
     };
 
+    // mouse move listener
     var map_on_mouse_move = function(e) {
       if (mouse_down) {
-        puts("map_on_mouse_move");
         e || (e = window.event);
 
         captured_point.style.left = (e.offsetX ? e.offsetX : e.layerX) + 'px';
@@ -183,14 +186,16 @@
       }
     };
 
+    // mouse up listener
     var document_on_mouse_up = function(e) {
       mouse_down = false;
       captured_point = null;
-      puts('document_on_mouse_up');
     };
 
+    // listener for putting dot on the map
     var map_on_click = function(e) {
       e || (e = window.event);
+      hide_edit_point_form();
 
       var x = e.offsetX ? e.offsetX : e.layerX; //e.pageX - self.el.parentNode.offsetLeft;
       var y = e.offsetY ? e.offsetY : e.layerY; //pageY - self.el.parentNode.offsetTop;
@@ -203,18 +208,21 @@
       }
     };
 
+    // listener: show edit point info form
     var point_on_dblclick= function(e) {
       e || (e = window.event);
       var el = get_element(e);
-      var point = points[el.id];
-      show_edit_point_form(point);
+      var point = self.points[el.id];
+      show_edit_point_form(point, e);
+
     };
 
+    // update point info
     var update_point = function(e) {
       e || (e = window.event);
       
       var form = get_element(e);
-      var point = points[form['point_id'].value];
+      var point = self.points[form['point_id'].value];
       point.update({
         name: form['point_name'].value,
         description: form['point_description'].value
@@ -225,13 +233,21 @@
       return false;
     };
 
+    // delete point from the DOM tre and collection points
     var remove_point = function(e) {
-      puts('remove pont');
+      e || (e = window.event);
+
+      var form = get_element(e);
+      var point = self.points[form['point_id'].value];
+      point = point.kill();
+      delete self.points[point.id];
+
       hide_edit_point_form();
       block_event(e);
       return false;
     };
 
+    // helper for getting targer (src) element from event
     var get_element = function(event) {
       var element = null;
       if (typeof event.target !== 'undefined') {
@@ -248,6 +264,7 @@
       bind(document, 'mouseup', document_on_mouse_up, false);
     };
 
+    // for fast implementation use innerHTML
     var build_edit_point_form = function() {
       var form = document.createElement('div');
       form.id = 'edit_point_form_container';
@@ -268,26 +285,35 @@
           <input type="submit" value="Update" />\
         </form>\
         <form id="delete_point_form">\
+          <input type="hidden" name="point_id" value="" />\
           <input type="submit" value="Delete" />\
         </form>\
         <input id="hide_form_button" type="button" value="Close" />\
       ';
 
       var container = self.el.parentNode;
-      var dy = container.offsetHeight - parseInt(form.style.height);
       form.style.top = (container.offsetTop + Math.round((container.offsetHeight - parseInt(form.style.height)) / 2)) + 'px';
-      form.style.left = 50 + 'px';
 
       return form;
     };
 
-    var show_edit_point_form = function(point) {
+    var show_edit_point_form = function(point, e) {
       edit_point_form.reset();
       if (typeof point !== 'undefined' && point) {
+        remove_point_form['point_id'].value = point.id;
         edit_point_form['point_id'].value = point.id;
         edit_point_form['point_name'].value = (point.name || "");
         edit_point_form['point_description'].innerHTML = (point.description || "");
       }
+
+      var form_width = parseInt(edit_point_form.parentNode.style.width);
+      var position = point.el.offsetLeft + point.el.offsetWidth;
+      puts("position(" + position + ") + form_width(" + form_width + ") = " + (position + form_width) + " > " + map.el.offsetWidth);
+      if ((position + form_width) > map.el.offsetWidth) {
+        position = map.el.offsetWidth - form_width - 10;
+      }
+      puts('poisition: ' + position);
+      edit_point_form.parentNode.style.left = position + 'px';
       edit_point_form.parentNode.style.display = 'block';
     };
 

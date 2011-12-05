@@ -44,12 +44,7 @@ table {
 }
 
 /* PROJECT */
-/*
-  *{
-		margin:0;
-		padding:0;
-	}
-  */
+
 #container{
   width: 300px;
   margin: 0 auto;
@@ -63,7 +58,6 @@ table {
 
     #img {
       position: relative;
-      /* width: 100%; /* IE6 */
       z-index: 0;
     }
 
@@ -72,10 +66,6 @@ table {
       height: 4px;
       background:#0a25c2;
       position: absolute;
-      z-index: 333;
-      /*
-      display: block;
-      overflow: auto; */
     }
 
     #edit_point_form_container {

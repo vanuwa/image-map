@@ -10,6 +10,6 @@ var map = new Map(document.getElementById('image-map'); // to set which image (<
 ```
 
 ## Support
-Firefox, Google Chrome
+Firefox, Google Chrome, Opera (11.52), Safari (5.1.2), IE8
 
-_Not tested_: IE6, IE7, IE8, Opera, Safari
+_Not tested_: IE6, IE7

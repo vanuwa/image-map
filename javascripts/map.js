@@ -110,10 +110,6 @@
       bind(this.el, 'dblclick', callback, false);
     };
 
-
-    // private methods: helpers and listeners
-
-
     return Point;
 
   })();
@@ -197,8 +193,8 @@
       e || (e = window.event);
       hide_edit_point_form();
 
-      var x = e.offsetX ? e.offsetX : e.layerX; //e.pageX - self.el.parentNode.offsetLeft;
-      var y = e.offsetY ? e.offsetY : e.layerY; //pageY - self.el.parentNode.offsetTop;
+      var x = e.offsetX ? e.offsetX : e.layerX;
+      var y = e.offsetY ? e.offsetY : e.layerY;
 
       var point = new Point({x: x, y: y});
 

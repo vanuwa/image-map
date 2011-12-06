@@ -1,6 +1,6 @@
 (function() {
  
-  SETTINGS = {
+  var SETTINGS = {
     version: '0.0.1',
     env: 'dev'
   };
@@ -319,6 +319,7 @@
   
   })(); 
 
+  // export classes to the global scope
   this.Map = Map;
   this.Point = Point;
 

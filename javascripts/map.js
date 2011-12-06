@@ -1,6 +1,6 @@
 (function() {
  
-  SETTINGS = {
+  var SETTINGS = {
     version: '0.0.1',
     env: 'dev'
   };
